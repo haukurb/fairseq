@@ -281,6 +281,12 @@ def train(
     trainer.begin_epoch(epoch_itr.epoch)
 
     valid_subsets = cfg.dataset.valid_subset.split(",")
+    # tasks like multilingual-desnoising change cfg.task.valid_subset
+    if cfg.dataset.valid_subset != cfg.task.valid_subset:
+        valid_subsets = set(cfg.dataset.valid_subset.split(","))
+        valid_subsets.update(cfg.task.valid_subset.split(","))
+        valid_subsets = list(valid_subsets)
+
     should_stop = False
     num_updates = trainer.get_num_updates()
     logger.info("Start iterating over samples")
